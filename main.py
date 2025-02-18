@@ -275,7 +275,7 @@ S.V.Savïnov atındağı emhana.
 Клиника - Лидер эпилептологии в Казахстане
        """)
 
-def send(answer):
+def send(answer, to_phone):
     url=f"https://graph.facebook.com/v18.0/{phone_id}/messages"
     headers={
         'Authorization': f'Bearer {wa_token}',
@@ -283,7 +283,7 @@ def send(answer):
     }
     data={
           "messaging_product": "whatsapp", 
-          "to": f"{phone}", 
+          "to": f"{to_phone}",  # Use the recipient's number here
           "type": "text",
           "text":{"body": f"{answer}"},
           }
@@ -314,6 +314,8 @@ def webhook():
     elif request.method == "POST":
         try:
             data = request.get_json()["entry"][0]["changes"][0]["value"]["messages"][0]
+            sender_phone = data["from"]  # Extract the sender's phone number
+          
             if data["type"] == "text":
                 prompt = data["text"]["body"]
                 convo.send_message(prompt)
